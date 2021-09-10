@@ -1,0 +1,260 @@
+
+# =================== freshwater =================== 
+# key parameters
+"Ammonium" ------------------------------------- ammonium (NH4+) ------------------------------------- "NH4"
+"Nitrat" --------------------------------------- nitrate (NO3-) -------------------------------------- "NO3"
+"Nitrit" --------------------------------------- nitrite (NO2-) -------------------------------------- "NO2"
+"ortho-Phosphat" ------------------------------- orthophosphate (PO4-3) ------------------------------ "oPO4"
+"Elektrische Leitfähigkeit (20°C)" ------------- electrical conductivity (20°C) ---------------------- "EC_20dC"
+"Elektrische Leitfähigkeit (25°C)" ------------- electrical conductivity (25°C) ---------------------- "EC_25dC"
+"pH-Wert (Feld)" ------------------------------- pH value (field) ------------------------------------ "pH.field"
+"Sauerstoffsättigung" -------------------------- oxygen saturation ----------------------------------- "O2.saturation"
+"Wassertemperatur" ----------------------------- water temperature ----------------------------------- "H2O.temp"
+
+
+# related to nutrients, oxygen
+"Gesamt-Stickstoff" ---------------------------- total nitrogen -------------------------------------- "tot.N"
+"Ammonium-Stickstoff" -------------------------- ammonium nitrogen (NH4+-N) -------------------------- "NH4N"
+"nicht ionisiertes Ammonium (NH3-N)" ----------- non-ionised ammonium (NH3-N) ------------------------ "nonionised.NH3N"
+"Nitrat-Stickstoff" ---------------------------- nitrate nitrogen (NO3-N) ---------------------------- "NO3N"
+"Nitrit-Stickstoff" ---------------------------- nitrite nitrogen (NO2-N) ---------------------------- "NO2N"
+"gesamter gebundener Stickstoff (TNb)" --------- total nitrogen bound (TNb) -------------------------- "tot.N.bound"
+"gesamter organisch gebundener Stickstoff" ----- total organically bound nitrogen -------------------- "tot.orgBound.N"
+"anorganisch gebundener Stickstoff" ------------ inorganically bound nitrogen ------------------------ "inorgBound.N"
+"Gesamt-Phosphor" ------------------------------ total phosphorus ------------------------------------ "tot.P"
+"Gesamtphosphor als P" ------------------------- total phosphorus as P ------------------------------- "tot.P.as.P"
+"o-Phosphat-P" --------------------------------- orthophosphate as phosphorus (PO4-P) ---------------- "oPO4P"
+"Sauerstoffgehalt" ----------------------------- oxygen content -------------------------------------- "O2.content"
+"Chemischer Sauerstoffbedarf" ------------------ chemical oxygen demand ------------------------------ "chem.O2.demand"
+"Sauerstoffzehrung nach 5 Tagen ohne Hemmer" --- oxygen consumption after 5 days without inhibitor --- "O2.consump.aft5days.wOutINH"
+"Sauerstoffzehrung nach 7 Tagen mit Hemmer" ---- oxygen consumption after 7 days with inhibitor ------ "O2.consump.aft7days.wINH"
+
+
+# others
+"Hydrogenkarbonat" ----------------------------- hydrogen carbonate ---------------------------------- "HCO3"
+"Karbonat" ------------------------------------- carbonate (CO3-2) ----------------------------------- "CO3"
+"Lufttemperatur" ------------------------------- air temperature ------------------------------------- "air.temp"
+"Abfiltrierbare Stoffe" ------------------------ filterable substances ------------------------------- "filtarable.substances"
+"Trübung" -------------------------------------- turbidity ------------------------------------------- "turbidity"
+"Trübung (physiko-chem. Messung)" -------------- turbidity (physico-chemical measurement) ------------ "turbidity_phyChem.meas"
+"Gesamthärte" ---------------------------------- total hardness -------------------------------------- "tot.hardness"
+
+
+# "ortho-Phosphat" ----------------------------- orthophosphate (PO4-3) ------------------------------ "oPO4"
+https://www.azocleantech.com/article.aspx?ArticleID=858
+
+
+# variables with missing values < 50%  &  abs(correlation) > 0.7
+[1] "EC_25dC"   
+[2] "H2O.temp"  
+[3] "NH4" ---------- ammonium (NH4+)
+[4] "NH4N" --------- ammonium nitrogen (NH4+-N)
+[5] "NO3" ---------- nitrate (NO3-)
+[6] "NO3N" --------- nitrate nitrogen (NO3-N)
+[7] "O2.content"
+[8] "oPO4P" -------- orthophosphate as phosphorus (PO4-P)
+
+
+
+
+# =================== wise-waterbase =================== 
+# key parameters
+"Ammonium" ----------------- NH4+ "NH4"
+"Nitrate" ------------------ NO3- "NO3"
+"Nitrite" ------------------ NO2- "NO2"
+"Electrical conductivity" -- "EC"
+"pH"
+"Water temperature"
+
+
+# related to nutrients, oxygen
+"Phosphate" ---------------- PO4-3 "PO4"
+"Dissolved oxygen" --------- "diss.O2"
+
+
+# pesticides
+"Atrazine" --------------------------------- herbicide of the triazine class; C8H14ClN5
+"2,4-dichlorophenoxyacetic acid, 2-4 D" ---- herbicide in the phenoxy or phenoxyacetic acid family; C8H6Cl2O3
+"Ametryn" ---------------------------------- herbicide of the triazine class; C9H17N5S
+"Bentazone" -------------------------------- herbicide under the thiadiazine group; C10H12N2O3S
+"Bromacil" --------------------------------- herbicide; C9H13BrN2O2
+"Bromoxynil" ------------------------------- herbicide; C7H3Br2NO
+"Chloridazon" ------------------------------ herbicide; C10H8ClN3O
+"Cyanazine" -------------------------------- herbicide of the triazine class; C9H13ClN6
+"Dichlorprop (2,4-DP)" --------------------- herbicide; C9H8Cl2O3
+"Ethofumesate" ----------------------------- herbicide; C13H18O5S
+"Hexazinone" ------------------------------- herbicide of the triazine class; C12H20N4O2
+"Isoproturon" ------------------------------ herbicide; C12H18N2O
+"Lenacil" ---------------------------------- herbicide; C13H18N2O2
+"MCPA" ------------------------------------- herbicide; C9H9ClO3
+"Mecoprop" --------------------------------- herbicide; C10H11ClO3
+"Metamitron" ------------------------------- herbicide; C10H10N4O
+"Metazachlor" ------------------------------ herbicide; C14H16ClN3O
+"Metolachlor" ------------------------------ herbicide; C15H22ClNO2
+"Metribuzin" ------------------------------- herbicide; C8H14N4OS
+"Pendimethalin" ---------------------------- herbicide of the dinitroaniline class; C13H19N3O4
+"Prometryn" -------------------------------- herbicide; C10H19N5S
+"Propazine" -------------------------------- herbicide; C9H16ClN5
+"Simazine" --------------------------------- herbicide of the triazine class; C7H12ClN5
+"Terbuthylazine" --------------------------- herbicide; C9H16ClN5
+"Terbutryn" -------------------------------- herbicide; C10H19N5S
+"Trifluralin" ------------------------------ herbicide; C13H16F3N3O4
+"Gamma-HCH (Lindane)" ---------------------- insecticide; C6H6Cl6; the most insecticidal isomer in HCH
+"Parathion" -------------------------------- insecticide; C10H14NO5PS
+"Pirimicarb" ------------------------------- insecticide; C11H18N4O2; used to control aphids on crops
+"Metalaxyl" -------------------------------- fungicide; C15H21NO4
+"Propiconazole" ---------------------------- fungicide; C15H17Cl2N3O2
+"Diuron" ----------------------------------- algicide, herbicide of the arylurea class; C9H10Cl2N2O; inhibits photosynthesis
+
+# excluded in the analysis
+"Aminomethylphosphonic acid (AMPA)" -------- degradation product of the herbicide glyphosate; CH6NO3P
+"Desethylatrazine" ------------------------- metabolite/ derivative of atrazine; C6H10ClN5
+"Desethylterbuthylazine" ------------------- metabolite of terbuthylazine; C7H12ClN5
+"Desisopropylatrazine" --------------------- metabolite derivative of atrazine; C5H8ClN5
+
+
+# unit
+ 1 diss.O2                          mg/L  
+ 2 EC                               uS/cm    
+ 3 fungicide                        ug/L    
+ 4 H2O.temp                         Cel     
+ 5 herbicide                        ug/L    
+ 6 insecticide                      ug/L   
+ 7 NH4                              mg{NH4}/L
+ 8 NO2                              mg{NO2}/L 
+ 9 NO3                              mg{NO3}/L  
+10 pesticide.general                ug/L   
+11 pH                               [pH]    
+12 PO4                              mg{P}/L 
+
+
+
+
+# =================== GEMStat =================== 
+# key parameters
+'Nitrate' ------------------------------ NO3- "NO3"
+'Nitrite' ------------------------------ NO2- "NO2"
+'Percent Dissolved Oxygen Saturation' -- "per.diss.O2.saturation"
+'Electrical Conductance' --------------- "EC"
+'pH'
+'Water Temperature'
+
+
+# related to nutrients, oxygen
+'Total Nitrogen' ----------------- "tot.N"
+'Dissolved Inorganic Nitrogen' --- "diss.inorg.N"
+'Nitrate and Nitrite' ------------ NO3- & NO2- "NO3andNO2"
+'Total Ammonium Nitrogen' -------- NH4+-N "tot.NH4N"
+'Free Ammonia Nitrogen' ---------- NH3-N "free.NH3N"
+'Total Phosphorus' --------------- "tot.P"
+'Total Dissolved Phosphorus' ----- "tot.diss.P"
+'Total Inorganic Phosphorus' ----- "tot.inorg.P"
+'Total Reactive Phosphorus' ------ "tot.reac.P"
+'Dissolved Reactive Phosphorus' -- "diss.reac.P"
+'Dissolved Oxygen' --------------- "diss.O2"
+
+
+# pesticides (also provided in wise-waterbase)
+ [3] "2,4-Dichlorophenoxyacetic Acid" ------------------------------------------- herbicide in the phenoxy or phenoxyacetic acid family; C8H6Cl2O3
+ [5] "Dichlorprop" -------------------------------------------------------------- herbicide; C9H8Cl2O3
+ [9] "N-ethyl-6-(methylsulfanyl)-N'-(propan-2-yl)-1,3,5-triazine-2,4-diamine" --- herbicide of the triazine class; C9H17N5S; Ametryn
+[10] "Atrazine" ----------------------------------------------------------------- herbicide of the triazine class 
+[14] "Bentazone" ---------------------------------------------------------------- herbicide under the thiadiazine group; C10H12N2O3S
+[20] "3,5-dibromo-4-hydroxybenzonitrile" ---------------------------------------- herbicide; C7H3Br2NO; Bromoxynil
+[23] "Cyanazine" ---------------------------------------------------------------- herbicide of the triazine class; C9H13ClN6
+[35] "Hexazinone" --------------------------------------------------------------- herbicide of the triazine class; C12H20N4O2
+[37] "3-p-cumenyl-1,1-dimethylurea" --------------------------------------------- herbicide; C12H18N2O; Isoproturon
+[40] "(4-Chloro-2-methylphenoxy)acetic acid" ------------------------------------ herbicide; C9H9ClO3; MCPA
+[42] "Mecoprop (mixed isomers)" ------------------------------------------------- herbicide; C10H11ClO3
+[46] "Metolachlor" -------------------------------------------------------------- herbicide; C15H22ClNO2
+[47] "Metribuzin" --------------------------------------------------------------- herbicide; C8H14N4OS
+[52] "Pendimethalin" ------------------------------------------------------------ herbicide of the dinitroaniline class; C13H19N3O4
+[55] "Prometryn" ---------------------------------------------------------------- herbicide; C10H19N5S
+[57] "Terbuthylazine" ----------------------------------------------------------- herbicide; C9H16ClN5
+[19] "Gamma-Hexachlorocyclohexane (Lindane)" ------------------------------------ insecticide; C6H6Cl6l; the most insecticidal isomer in HCH
+[50] "Parathion ethyl" ---------------------------------------------------------- insecticide; C10H14NO5PS; same as "Parathion"
+[54] "Pirimicarb" --------------------------------------------------------------- insecticide; C11H18N4O2; used to control aphids on crops
+[43] "Metalaxyl" ---------------------------------------------------------------- fungicide; C15H21NO4
+[24] "Diuron" ------------------------------------------------------------------- algicide, herbicide of the arylurea class; C9H10Cl2N2O; inhibits photosynthesis
+
+
+# pesticides (only in GEMStat)
+ [1] "(2,4,5-Trichlorophenoxy)acetic acid" -------------------------------------- herbicide; C8H5Cl3O3; 2,4,5-T
+ [2] "2-(2,4,5-Trichlorophenoxy)propanoic acid" --------------------------------- herbicide; C9H7Cl3O3; Fenoprop
+ [4] "4-(2,4-dichlorophenoxy)butanoic acid" ------------------------------------- herbicide; C10H10Cl2O3; 2,4-DB
+ [6] "3,6-Dichloropyridine-2-carboxylic acid" ----------------------------------- herbicide; C6H3Cl2NO2; Clopyralid
+[21] "Chloroxuron" -------------------------------------------------------------- herbicide; C15H15ClN2O2
+[26] "3,6-Dichloro-2-methoxybenzoic acid" --------------------------------------- herbicide; C8H6Cl2O3; Dicamba
+[32] "Flufenacet" --------------------------------------------------------------- herbicide; C14H13F4N3O2S
+[38] "Linuron" ------------------------------------------------------------------ herbicide; C9H10Cl2N2O2
+[41] "4-(4-Chloro-2-methylphenoxy)butanoic acid" -------------------------------- herbicide; C11H13ClO3; MCPB
+[45] "Metobromuron" ------------------------------------------------------------- herbicide; C9H11BrN2O2
+[48] "Napropamide" -------------------------------------------------------------- herbicide; C17H21NO2
+[49] "Nicosulfuron" ------------------------------------------------------------- herbicide; C15H18N6O6S
+[53] "Picloram" ----------------------------------------------------------------- herbicide; C6H3Cl3N2O2
+ [7] "4,4'-DDT" ----------------------------------------------------------------- insecticide; C14H9Cl5
+[11] "Azinphos-ethyl" ----------------------------------------------------------- insecticide; C12H16N3O3PS2
+[16] "Alpha-Hexachlorocyclohexane" ---------------------------------------------- insecticide; C6H6Cl6
+[22] "Chlorpyrifos-ethyl" ------------------------------------------------------- insecticide; C9H11Cl3NO3PS
+[25] "Total Dichloro-Diphenyl-Trichloroethanes" --------------------------------- insecticide; C14H9Cl5; Total DDT
+[27] "2,2-Dichlorovinyl dimethyl phosphate" ------------------------------------- insecticide; C4H7Cl2O4P; Dichlorvos
+[28] "Dimethoate" --------------------------------------------------------------- insecticide; C5H12NO3PS2
+[29] "Diazinon" ----------------------------------------------------------------- insecticide; C12H21N2O3PS
+[30] "Endosulfan" --------------------------------------------------------------- insecticide; C9H6Cl6O3S
+[31] "Fenitrothion" ------------------------------------------------------------- insecticide; C9H12NO5PS
+[33] "Azinphos-methyl" ---------------------------------------------------------- insecticide; C10PN3H12S2O3
+[36] "Imidacloprid" ------------------------------------------------------------- insecticide; C9H10ClN5O2
+[39] "Malathion" ---------------------------------------------------------------- insecticide; C10H19O6PS2
+[44] "Parathion methyl" --------------------------------------------------------- insecticide; C8H10NO5PS
+[58] "Thiacloprid" -------------------------------------------------------------- insecticide; C10H9ClN4S
+[12] "Azoxystrobin" ------------------------------------------------------------- fungicide; C22H17N3O5
+[34] "Hexachlorobenzene" -------------------------------------------------------- fungicide; C6Cl6
+[56] "Tebuconazole" ------------------------------------------------------------- fungicide; C16H22ClN3O
+[51] "Pentachlorophenol" -------------------------------------------------------- herbicide, insecticide, fungicide, algaecide; C6HCl5O
+[59] "3,5,6-Trichloro-2-pyridinyloxyacetic acid" -------------------------------- herbicide, fungicide; C7H4Cl3NO3; Triclopyr
+
+# excluded in the analysis
+[15] "Hexachlorocyclohexane" ---------------------------------------------------- a mixture of eight or more stereoisomers used as an insecticide; C6H6Cl6
+[17] "Beta-Hexachlorocyclohexane" ----------------------------------------------- byproduct of the production of the insecticide lindane; C6H6Cl6
+[18] "Delta-Hexachlorocyclohexane" ---------------------------------------------- byproduct of the production of the insecticide lindane; C6H6Cl6
+[13] "2,6-Dichlorobenzamide" ---------------------------------------------------- metabolite of the herbicide Dichlobenil; Cl2C6H3CONH2
+
+
+# unit
+1            diss.inorg.N     mg/l 
+2                 diss.O2     mg/l 
+3             diss.reac.P     mg/l
+4                      EC \xb5S/cm  -- uS/cm
+5               fungicide  \xb5g/l  -- ug/L
+6                H2O.temp    \xb0C  -- Cel
+7               herbicide  \xb5g/l  -- ug/L
+8             insecticide  \xb5g/l  -- ug/L
+9                     NO2     mg/l 
+10                    NO3     mg/l
+11            NO3.and.NO2     mg/l
+12 per.diss.O2.saturation        %
+13      pesticide.general  \xb5g/l  -- ug/L
+14                     pH      --- 
+15             tot.diss.P     mg/l 
+16            tot.inorg.N     mg/l 
+17                  tot.N     mg/l 
+18               tot.NH3N     mg/l 
+19               tot.NH4N     mg/l 
+20                  tot.P     mg/l 
+21             tot.reac.P     mg/l 
+
+
+
+ 1 diss.O2                          mg/L  
+ 2 EC                               uS/cm    
+ 3 fungicide                        ug/L    
+ 4 H2O.temp                         Cel     
+ 5 herbicide                        ug/L    
+ 6 insecticide                      ug/L   
+ 7 NH4                              mg{NH4}/L
+ 8 NO2                              mg{NO2}/L 
+ 9 NO3                              mg{NO3}/L  
+10 pesticide.general                ug/L   
+11 pH                               [pH]    
+12 PO4                              mg{P}/L 
+

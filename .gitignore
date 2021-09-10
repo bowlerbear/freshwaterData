@@ -40,3 +40,10 @@ vignettes/*.pdf
 
 #ignore all data files
 data/*
+processed/*
+tmp/*
+
+/MTBQ/
+*.RData
+*.rds
+*.Rproj
