@@ -87,6 +87,7 @@ gs_nuVarPerSite_map <- germany_bw_map %>% ggmap() +
   viridis::scale_colour_viridis() +
   ggtitle("Sites provided with coordinates, number of variables sampled per site")
 # ggsave(filename = paste0(eda_directory, "/", "nuVar_perSite_map.png"), gs_nuVarPerSite_map)
+rm(gs_sites_nuVar_wSites, gs_nuVarPerSite_map)
 
 
 # check how many years for each site 
@@ -104,6 +105,8 @@ gs_nuYearPerSite_map <- germany_bw_map %>% ggmap() +
   viridis::scale_colour_viridis() +
   ggtitle("Sites provided with coordinates, number of years sampled per site")
 # ggsave(filename = paste0(eda_directory, "/", "nuYear_perSite_map.png"), gs_nuYearPerSite_map)
+rm(gs_sites_nuYear_wSites, gs_nuYearPerSite_map)
+
 
 
 
@@ -128,6 +131,7 @@ gs_nuVarPerYear <- geomstat_samples %>%
   ggplot() +
   geom_col(aes(x=year, y=`n_distinct(ParameterCode)`)) 
 # ggsave(filename = paste0(eda_directory, "/", "nuVar_perYear.png"), gs_nuVarPerYear)
+rm(gs_nuVarPerYear)
 
 
 # check no. of years sampled for each variable
@@ -315,6 +319,7 @@ gs_nuVarPerSite_map <- germany_bw_map %>% ggmap() +
   viridis::scale_colour_viridis() +
   ggtitle("Sites provided with coordinates, number of variables sampled per site")
 # ggsave(filename = paste0(eda_directory, "/", "nuVar_perSite_map.png"), gs_nuVarPerSite_map)
+rm(gs_sites_nuVar_wSites, gs_nuVarPerSite_map)
 
 
 # check how many years for each site 
@@ -332,6 +337,7 @@ gs_nuYearPerSite_map <- germany_bw_map %>% ggmap() +
   viridis::scale_colour_viridis() +
   ggtitle("Sites provided with coordinates, number of years sampled per site")
 # ggsave(filename = paste0(eda_directory, "/", "nuYear_perSite_map.png"), gs_nuYearPerSite_map)
+rm(gs_sites_nuYear_wSites, gs_nuYearPerSite_map)
 
 
 
@@ -342,6 +348,7 @@ gs_variables_distribution_plot <- ggplot(geomstat_samples)+
   geom_histogram(aes(Value)) +
   facet_wrap(~ParameterCode,scales="free",ncol=5)
 # ggsave(filename = paste0(eda_directory, "/", "variables_distribution.png"), gs_variables_distribution_plot)
+rm(gs_variables_distribution_plot)
 
 
 # which are the most commonly sampled variables
@@ -363,6 +370,7 @@ gs_varSummary_hist <- gs_varSummary %>%
   xlab("variable") + ylab("number") + 
   ggtitle("Sampled variables: number of dates, years, sites")
 # ggsave(filename = paste0(eda_directory, "/", "nuDate_nuYear_nuSite_perVar.png"), wb_varSummary_hist)
+rm(gs_varSummary_hist)
 
 
 # check number of variables per year
@@ -382,6 +390,7 @@ gs_VarPerYear <- geomstat_samples %>% ggplot() +
   theme(legend.position="none") +
   ggtitle("Variables sampled in each year")
 # ggsave(filename = paste0(eda_directory, "/", "variables_sampled_each_year.png"), gs_VarPerYear)
+rm(gs_nuVarPerYear, gs_VarPerYear)
 
 
 
@@ -409,6 +418,7 @@ gs_nuMissingValuesVariables_selected <- gs_dataCast_missing_df %>%
   facet_wrap(~type,scales="free", ncol=2) +
   ggtitle("Number/Percentage of missing values for each variable, across all combinations of sites and dates")
 # ggsave(filename = paste0(eda_directory, "/", "nuNA_perVar_selected.png"), gs_nuMissingValuesVariables_selected)
+rm(gs_nuMissingValuesVariables_selected)
 
 
 

@@ -31,6 +31,83 @@ gs_summaryYear %>% is.na() %>% sum()
 
 
 # =================== time series =================== 
+ts_directory <- "processed/gemstat_time_series"
+
+
+# annual trends -- splines
+annual_trend_geom_smooth <- gs_summaryYear %>% ggplot(aes(x=year,y=meanVal)) +
+  geom_smooth() +
+  facet_wrap(~name,scales="free") +
+  ylab('mean') +
+  ggtitle("Annual trend")
+# ggsave(filename = paste0(ts_directory, "/", "annual_trend_geom_smooth.png"), annual_trend_geom_smooth)
+rm(annual_trend_geom_smooth)
+
+# annual trends -- splines and points
+annual_trend_geom_smooth_point <- gs_summaryYear %>% ggplot(aes(x=year,y=meanVal)) +
+  geom_point(colour="purple", size=0.2) +
+  geom_smooth() +
+  facet_wrap(~name,scales="free") +
+  ylab('mean') +
+  ggtitle("Annual trend")
+# ggsave(filename = paste0(ts_directory, "/", "annual_trend_geom_smooth_point.png"), annual_trend_geom_smooth_point)
+rm(annual_trend_geom_smooth_point)
+
+# annual trends -- lines
+annual_trend_geom_line <- gs_summaryYear %>% 
+  group_by(name, year) %>% 
+  summarise(meanVal=mean(meanVal, na.rm=T)) %>% 
+  ggplot(aes(x=year,y=meanVal)) +
+  geom_line() +
+  facet_wrap(~name,scales="free") +
+  ylab('mean') +
+  ggtitle("Annual trend")
+# ggsave(filename = paste0(ts_directory, "/", "annual_trend_geom_line.png"), annual_trend_geom_line)
+rm(annual_trend_geom_line)
+
+
+
+# monthly trends -- lines
+monthly_trend_geom_line <- gs_dataCast_ts1 %>% 
+  filter(year >= 1980, monthDate != "01-01") %>% 
+  group_by(name, month) %>% 
+  summarise(meanVal=mean(value, na.rm=T)) %>% 
+  ggplot(aes(x=month, y=meanVal)) +
+  geom_line() +
+  facet_wrap(~name,scales="free") +
+  scale_x_continuous(breaks=seq(1,12,1)) +
+  ylab('mean') +
+  ggtitle("Monthly trend")
+# ggsave(filename = paste0(ts_directory, "/", "monthly_trend_geom_line.png"), monthly_trend_geom_line)
+rm(monthly_trend_geom_line)
+
+# monthly trends -- splines
+monthly_trend_geom_smooth <- gs_dataCast_ts1 %>% 
+  filter(year >= 1980, monthDate != "01-01") %>% 
+  group_by(name, month) %>% 
+  summarise(meanVal=mean(value, na.rm=T)) %>% 
+  ggplot(aes(x=month, y=meanVal)) +
+  geom_smooth() +
+  facet_wrap(~name,scales="free") +
+  scale_x_continuous(breaks=seq(1,12,1)) +
+  ylab('mean') +
+  ggtitle("Monthly trend")
+# ggsave(filename = paste0(ts_directory, "/", "monthly_trend_geom_smooth.png"), monthly_trend_geom_smooth)
+rm(monthly_trend_geom_smooth)
+
+# monthly trends by year
+monthly_trend_by_year <- gs_dataCast_ts1 %>% 
+  filter(year >= 1980, monthDate != "01-01") %>% 
+  group_by(name, year, month) %>% 
+  summarise(meanVal=mean(value, na.rm=T)) %>% 
+  ggplot(aes(x=month, y=meanVal)) +
+  geom_line(aes(colour=factor(year))) + 
+  facet_wrap(~name,scales="free") +
+  scale_x_continuous(breaks=seq(1,12,1)) +
+  ylab('mean') +
+  ggtitle("Monthly trend by year")
+# ggsave(filename = paste0(ts_directory, "/", "monthly_trend_by_year.png"), monthly_trend_by_year)
+rm(monthly_trend_by_year)
 
 
 
@@ -129,6 +206,69 @@ for (i in 1:length(gs_waterquality_vars)) {
   rm(trendsMap)
 }
 rm(i)
+
+
+
+
+# =================== mean maps ===================
+# function for calculating means
+gs_calMeans <- function(df, year_number) {
+  # get mean at each site_id
+  gs_means <- plyr::ddply(na.omit(df),c("name","site_id"),function(x){
+    if(length(unique(x$year))>year_number){
+      temp <- x %>% 
+        group_by(site_id, name) %>% 
+        summarise(meanVal = mean(meanVal, na.rm=T))
+      temp$minYear <- min(x$year)
+      temp$maxYear <- max(x$year)
+      return(temp)
+    }
+  })
+  # merge with site data
+  gs_means <- merge(gs_means,(geomstat_meta_station %>% 
+                                  select(c("GEMSStationNumber", "WaterType", "MainBasin",
+                                           "Latitude", "Longitude")) %>% 
+                                  rename(site_id = GEMSStationNumber)), by="site_id") %>% tibble()
+  return(gs_means)
+}
+
+
+# minimum 8 years
+gs_means8 <- gs_calMeans(df=gs_summaryYear, year_number=7)
+
+
+# plot means maps for all water quality variables
+gs_waterquality_vars <- gs_means8$name %>% unique()
+
+
+tm_shape(germany_shp) +
+  tm_polygons(lwd = 0.5) +
+  tm_shape(gs_means8 %>% filter(name=="NO3", !is.na(Longitude)) %>% sf::st_as_sf(coords=c("Longitude", "Latitude"))) +
+  tm_dots(col="meanVal", size=0.1, alpha=0.7, palette = "viridis", midpoint = NA) +
+  tm_layout(legend.outside = TRUE, main.title = "NO3")
+
+
+
+# tmap version
+for (i in 1:length(gs_waterquality_vars)) {
+  print(paste0("Mapping: ", gs_waterquality_vars[i]))
+  
+  # default map
+  meansMap <- tm_shape(germany_shp) +
+    tm_polygons(lwd = 0.5) +
+    tm_shape(gs_means8 %>% filter(name==gs_waterquality_vars[i], !is.na(Longitude)) %>% sf::st_as_sf(coords=c("Longitude", "Latitude"))) +
+    tm_dots(col="meanVal", size=0.1, alpha=0.7, palette = "viridis", midpoint = NA) +
+    tm_layout(legend.outside = TRUE, main.title = gs_waterquality_vars[i])
+  
+  tmap_save(tm = meansMap, 
+            filename = paste0("processed/gemstat_means_maps_by_site_min8years/", gs_waterquality_vars[i],
+                              "_Means.png"))
+  
+  rm(meansMap)
+}
+rm(i)
+
+
 
 
 
