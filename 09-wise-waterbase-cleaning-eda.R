@@ -1,8 +1,8 @@
 
 library(tidyverse)
-library(ggmap)
+# library(ggmap)
 library(tmap)
-source("00-utils.R")
+# source("00-utils.R")
 
 
 # =================== import data =================== 
@@ -26,6 +26,8 @@ rm(WISE6_AggregatedData_monitoringSiteIdentifier)
 
 # only DE
 WISE6_AggregatedDataByWaterBody <- read_csv('data/wise-eea/Waterbase_v2020_1_WISE6_Part2_csv/Waterbase_v2020_1_T_WISE6_AggregatedDataByWaterBody.csv') 
+
+rm(WISE6_AggregatedData, WISE6_AggregatedDataByWaterBody)
 
 
 
@@ -82,76 +84,27 @@ water_quality_icm_DE <- water_quality_icm_DE %>%
          )
 
 
+# remove winter months from the dataset
+water_quality_icm_DE <- water_quality_icm_DE %>% 
+  filter(!(month %in% c(12, 1, 2))) # rmeove 17368 rows
 
 
-# =================== site data 1 =================== 
-eda_directory_all <- "processed/wisewb/excluded_winter_months/wisewb_summary_stats/all_variables"
+# transform to UTM
+# remove NAs in coordinates
+WISE6_SpatialObject_DerivedData_UTM <- WISE6_SpatialObject_DerivedData %>% filter(!is.na(lon))
 
-# check no. of missing coordinates
-WISE6_SpatialObject_DerivedData %>% nrow() # 2074
-WISE6_SpatialObject_DerivedData %>% filter(!is.na(lat)) %>% nrow() # 1645
-# 429 missing coordinates
+# transformation
+XY_df <- convertLonLat2UTM(WISE6_SpatialObject_DerivedData_UTM$lon, WISE6_SpatialObject_DerivedData_UTM$lat)
 
-WISE6_SpatialObject_DerivedData$monitoringSiteIdentifier %>% unique()
+WISE6_SpatialObject_DerivedData_UTM$easting <- XY_df$X
+WISE6_SpatialObject_DerivedData_UTM$northing <- XY_df$Y
+rm(XY_df)
 
-
-# visualise available coordinates
-germany_bw_map %>% ggmap() +
-  geom_point(data=WISE6_SpatialObject_DerivedData, 
-             aes(x=lon, y=lat), alpha=0.7)
-
-
-
-# merge water_quality_icm_DE and WISE6_SpatialObject_DerivedData
-water_quality_icm_DE_wSites <- water_quality_icm_DE %>% left_join((WISE6_SpatialObject_DerivedData %>% 
-                                                                      select(-monitoringSiteIdentifierScheme)), 
-                                                                   by="monitoringSiteIdentifier")
-
-# no. of missing coordinates
-water_quality_icm_DE_wSites %>% nrow() # 242484
-water_quality_icm_DE_wSites %>% filter(!is.na(lat)) %>% nrow() # 192885
-# 49599 missing coordinates
-
-# visualise available coordinates
-germany_bw_map %>% ggmap() +
-  geom_point(data=water_quality_icm_DE_wSites, 
-             aes(x=lon, y=lat), alpha=0.7)
-
-
-# check how many variables for each site 
-wb_sites_nuVar_wSites <- water_quality_icm_DE %>% 
-  group_by(monitoringSiteIdentifier) %>% 
-  summarise(nuVar = n_distinct(observedPropertyDeterminandLabel)) %>% 
-  left_join((water_quality_icm_DE_wSites %>% 
-               select(monitoringSiteIdentifier, lat, lon) %>% distinct()), 
-            by="monitoringSiteIdentifier")
-
-# visualise
-wb_nuVarPerSite_map <- germany_bw_map %>% ggmap() +
-  geom_point(data=wb_sites_nuVar_wSites, 
-             aes(x=lon, y=lat, color=nuVar), alpha=0.7)+
-  viridis::scale_colour_viridis() +
-  ggtitle("Sites provided with coordinates, number of variabls sampled per site")
-# ggsave(filename = paste0(eda_directory_all, "/", "nuVar_perSite_map.png"), wb_nuVarPerSite_map)
-rm(wb_sites_nuVar_wSites, wb_nuVarPerSite_map)
-
-
-# check how many years for each site 
-wb_sites_nuYear_wSites <- water_quality_icm_DE %>% 
-  group_by(monitoringSiteIdentifier) %>% 
-  summarise(nuYear = n_distinct(year)) %>% 
-  left_join((water_quality_icm_DE_wSites %>% 
-               select(monitoringSiteIdentifier, lat, lon) %>% distinct()), 
-            by="monitoringSiteIdentifier")
-
-# visualise
-wb_nuYearPerSite_map <- germany_bw_map %>% ggmap() +
-  geom_point(data=wb_sites_nuYear_wSites, 
-             aes(x=lon, y=lat, color=nuYear), alpha=0.7)+
-  viridis::scale_colour_viridis() +
-  ggtitle("Sites provided with coordinates, number of years sampled per site")
-# ggsave(filename = paste0(eda_directory_all, "/", "nuYear_perSite_map.png"), wb_nuYearPerSite_map)
-rm(wb_sites_nuYear_wSites, wb_nuYearPerSite_map)
+# germany's shape file
+sys <- "+proj=tmerc +lat_0=0 +lon_0=9 +k_0=1 +x_0=3500000 +y_0=0 +ellps=bessel +units=m"
+germany_sp <- as(germany_shp, "Spatial")
+germany_sp <- sp::spTransform(germany_sp, raster::crs(sys))
+germany_sf <- germany_sp %>% sf::st_as_sf()
 
 
 
@@ -185,10 +138,6 @@ wb_varSummary$nuYears %>% sort()
 # keep only variables which were at least sampled for 5 years
 wb_var_keep <- wb_varSummary$observedPropertyDeterminandLabel[wb_varSummary$nuYears >= 5] # length: 80
 
-
-# count the no. of data point in each combination of year and month
-
-rm(eda_directory_all)
 
 
 
@@ -266,7 +215,7 @@ water_quality_icm_DE <- water_quality_icm_DE %>% mutate(observedPropertyDetermin
 water_quality_icm_DE$observedPropertyDeterminandLabel %>% unique()
 
 # check unit
-water_quality_icm_DE %>% group_by(observedPropertyDeterminandLabel, resultUom) %>% summarise(value = mean(resultObservedValue ))
+water_quality_icm_DE %>% group_by(observedPropertyDeterminandLabel, resultUom) %>% summarise(value = mean(resultObservedValue))
 
 rm(wb_varSummary, wb_var_keep)
 rm(wb_herbicides, wb_insecticides, wb_fungicides, wb_pesticides_general)
@@ -275,23 +224,34 @@ rm(wb_var_selected)
 
 
 
-# =================== site data 2 =================== 
+# =================== site data ===================
 eda_directory <- "processed/wisewb/excluded_winter_months/wisewb_summary_stats"
 
 # merge water_quality_icm_DE and WISE6_SpatialObject_DerivedData
-water_quality_icm_DE_wSites <- water_quality_icm_DE %>% left_join((WISE6_SpatialObject_DerivedData %>% 
+water_quality_icm_DE_wSites <- water_quality_icm_DE %>% left_join((WISE6_SpatialObject_DerivedData_UTM %>% 
                                                                      select(-monitoringSiteIdentifierScheme)), 
                                                                   by="monitoringSiteIdentifier")
 
+
 # no. of missing coordinates
 water_quality_icm_DE_wSites %>% nrow() # 127149
-water_quality_icm_DE_wSites %>% filter(!is.na(lat)) %>% nrow() # 96907
-# 30242 missing coordinates (23.8%)
+water_quality_icm_DE_wSites %>% filter(!is.na(easting)) %>% nrow() # 96907
+# 30242 missing coordinates
+
+
+water_quality_icm_DE_wSites_sf <- water_quality_icm_DE_wSites %>% 
+  filter(!is.na(easting)) %>% sf::st_as_sf(coords=c("easting", "northing"))
+sf::st_crs(water_quality_icm_DE_wSites_sf) <- sys
+
 
 # visualise available coordinates
-germany_bw_map %>% ggmap() +
-  geom_point(data=water_quality_icm_DE_wSites, 
-             aes(x=lon, y=lat), alpha=0.7)
+tm_shape(germany_sf) +
+  tm_polygons(lwd = 0.5) +
+  tm_shape(water_quality_icm_DE_wSites_sf) +
+  tm_dots() +
+  tm_layout(legend.outside = TRUE)
+rm(water_quality_icm_DE_wSites_sf)
+
 
 
 # check how many variables for each site 
@@ -299,17 +259,24 @@ wb_sites_nuVar_wSites <- water_quality_icm_DE %>%
   group_by(monitoringSiteIdentifier) %>% 
   summarise(nuVar = n_distinct(observedPropertyDeterminandLabel)) %>% 
   left_join((water_quality_icm_DE_wSites %>% 
-               select(monitoringSiteIdentifier, lat, lon) %>% distinct()), 
+               select(monitoringSiteIdentifier, easting, northing) %>% distinct()), 
             by="monitoringSiteIdentifier")
 
+wb_sites_nuVar_wSites_sf <- wb_sites_nuVar_wSites %>% 
+  filter(!is.na(easting)) %>% sf::st_as_sf(coords=c("easting", "northing"))
+sf::st_crs(wb_sites_nuVar_wSites_sf) <- sys
+
 # visualise
-wb_nuVarPerSite_map <- germany_bw_map %>% ggmap() +
-  geom_point(data=wb_sites_nuVar_wSites, 
-             aes(x=lon, y=lat, color=nuVar), alpha=0.7)+
-  viridis::scale_colour_viridis() +
-  ggtitle("Sites provided with coordinates, number of variables sampled per site")
-# ggsave(filename = paste0(eda_directory, "/", "nuVar_perSite_map.png"), wb_nuVarPerSite_map)
-rm(wb_sites_nuVar_wSites, wb_nuVarPerSite_map)
+wb_nuVarPerSite_map <- tm_shape(germany_sf) +
+  tm_polygons(lwd = 0.5) +
+  tm_shape(wb_sites_nuVar_wSites_sf) +
+  tm_dots(col="nuVar", size=0.15, alpha=0.7, palette = "viridis", midpoint = NA) +
+  tm_layout(legend.outside = TRUE, main.title = "Sites provided with coordinates, number of variabls sampled per site")
+
+tmap_save(tm = wb_nuVarPerSite_map, filename = paste0(eda_directory, "/", "nuVar_perSite_map.png"))
+
+rm(wb_sites_nuVar_wSites_sf, wb_nuVarPerSite_map)
+
 
 
 # check how many years for each site 
@@ -317,17 +284,23 @@ wb_sites_nuYear_wSites <- water_quality_icm_DE %>%
   group_by(monitoringSiteIdentifier) %>% 
   summarise(nuYear = n_distinct(year)) %>% 
   left_join((water_quality_icm_DE_wSites %>% 
-               select(monitoringSiteIdentifier, lat, lon) %>% distinct()), 
+               select(monitoringSiteIdentifier, easting, northing) %>% distinct()), 
             by="monitoringSiteIdentifier")
 
+wb_sites_nuYear_wSites_sf <- wb_sites_nuYear_wSites %>% 
+  filter(!is.na(easting)) %>% sf::st_as_sf(coords=c("easting", "northing"))
+sf::st_crs(wb_sites_nuYear_wSites_sf) <- sys
+
 # visualise
-wb_nuYearPerSite_map <- germany_bw_map %>% ggmap() +
-  geom_point(data=wb_sites_nuYear_wSites, 
-             aes(x=lon, y=lat, color=nuYear), alpha=0.7)+
-  viridis::scale_colour_viridis() +
-  ggtitle("Sites provided with coordinates, number of years sampled per site")
-# ggsave(filename = paste0(eda_directory, "/", "nuYear_perSite_map.png"), wb_nuYearPerSite_map)
-rm(wb_sites_nuYear_wSites, wb_nuYearPerSite_map)
+wb_nuYearPerSite_map <- tm_shape(germany_sf) +
+  tm_polygons(lwd = 0.5) +
+  tm_shape(wb_sites_nuYear_wSites_sf) +
+  tm_dots(col="nuYear", size=0.15, alpha=0.7, palette = "viridis", midpoint = NA) +
+  tm_layout(legend.outside = TRUE, main.title = "Sites provided with coordinates, number of variabls sampled per site")
+
+tmap_save(tm = wb_nuYearPerSite_map, filename = paste0(eda_directory, "/", "nuYear_perSite_map.png"))
+
+rm(wb_sites_nuYear_wSites_sf, wb_nuYearPerSite_map)
 
 
 
@@ -429,12 +402,56 @@ rm(wb_cors, wb_variables_corr_plot)
 
 
 # =================== PCA =================== 
+df_variables <- wb_dataCast %>% select(-c("sample_id", "monitoringSiteIdentifier", "phenomenonTimeSamplingDate"))
+
+# impute missing values
+# estimate number of components
+nb <- missMDA::estim_ncpPCA(df_variables, ncp.min=0, ncp.max=5)
+# $ncp
+# [1] 0
+# 
+# $criterion
+# 0            1            2            3            4            5 
+# 1.720500e+05 2.445475e+05 8.326169e+05 2.554061e+09 2.381136e+05 1.938203e+04 
+
+# actual impute
+rr.impute <- missMDA::imputePCA(df_variables, ncp=0)
+rr.impute$completeObs %>% data.frame() %>% tibble()
 
 
+# run PCA
+pca.fit <- prcomp(rr.impute$completeObs,scale=TRUE)
+pca.fit %>% summary()
 
 
-rm(WISE6_AggregatedData, WISE6_AggregatedDataByWaterBody)
+# visualise contribution of variables
+pcaVariables_loadings <- factoextra::fviz_pca_var(pca.fit, col.var="contrib",
+                                                  gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                                                  repel = TRUE)
+# ggsave(filename = paste0(eda_directory, "/", "pcaVariables_loadings.png"), pcaVariables_loadings)
+rm(pcaVariables_loadings)
 
+
+# visualize eigenvalues/variances
+pcaVariables_screePlot <- factoextra::fviz_eig(pca.fit, addlabels = TRUE)
+# ggsave(filename = paste0(eda_directory, "/", "pcaVariables_screePlot.png"), pcaVariables_screePlot)
+rm(pcaVariables_screePlot)
+
+# variable contributions to the principal axes:
+# contributions of variables to PC1
+pcaVariables_PC1 <- factoextra::fviz_contrib(pca.fit, choice = "var", axes = 1, top = 10)
+# ggsave(filename = paste0(eda_directory, "/", "pcaVariables_PC1.png"), pcaVariables_PC1)
+rm(pcaVariables_PC1)
+
+# contributions of variables to PC2
+pcaVariables_PC2 <- factoextra::fviz_contrib(pca.fit, choice = "var", axes = 2, top = 10)
+# ggsave(filename = paste0(eda_directory, "/", "pcaVariables_PC2.png"), pcaVariables_PC2)
+rm(pcaVariables_PC2)
+
+rm(df_variables, nb, rr.impute, pca.fit)
+
+
+rm(eda_directory)
 
 
 

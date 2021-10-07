@@ -308,12 +308,12 @@ rm(pcaVariables_screePlot)
 
 # variable contributions to the principal axes:
 # contributions of variables to PC1
-pcaVariables_PC1 <- fviz_contrib(pca.fit, choice = "var", axes = 1, top = 10)
+pcaVariables_PC1 <- factoextra::fviz_contrib(pca.fit, choice = "var", axes = 1, top = 10)
 # ggsave(filename = paste0(eda_directory, "/", "pcaVariables_PC1.png"), pcaVariables_PC1)
 rm(pcaVariables_PC1)
 
 # contributions of variables to PC2
-pcaVariables_PC2 <- fviz_contrib(pca.fit, choice = "var", axes = 2, top = 10)
+pcaVariables_PC2 <- factoextra::fviz_contrib(pca.fit, choice = "var", axes = 2, top = 10)
 # ggsave(filename = paste0(eda_directory, "/", "pcaVariables_PC2.png"), pcaVariables_PC2)
 rm(pcaVariables_PC2)
 
