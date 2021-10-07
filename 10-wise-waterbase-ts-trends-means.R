@@ -30,7 +30,7 @@ wb_summaryYear %>% is.na() %>% sum()
 
 
 # =================== time series =================== 
-ts_directory <- "processed/wisewb_time_series"
+ts_directory <- "processed/wisewb/excluded_winter_months/wisewb_time_series"
 
 # annual trends -- splines
 annual_trend_geom_smooth <- wb_summaryYear %>% ggplot(aes(x=year,y=meanVal)) +
@@ -130,7 +130,7 @@ germany_sf <- germany_sp %>% sf::st_as_sf()
 
 # produce raster files and maps for each variable, in each year
 wb_waterquality_vars <- wb_dataCast_ts1$name %>% unique()
-directory <- "processed/wisewb_raster"
+directory <- "processed/wisewb/excluded_winter_months/wisewb_raster"
 
 raster_directory <- paste0(directory, "/raster")
 dir.create(raster_directory)
@@ -220,7 +220,7 @@ extractMTBQ <- function(variable) {
   print(myyears)
   
   # get mean climate value per MTBQ, and convert to a df
-  fdirectory <- paste0('processed/wisewb_raster/raster/', variable)
+  fdirectory <- paste0('processed/wisewb/excluded_winter_months/wisewb_raster/raster/', variable)
   yearfiles <- list.files(fdirectory)[sapply(list.files(fdirectory),function(x)grepl(myyearsC,x))]
   
   # for each year, get mean climate value per MTBQ, and convert to a df
@@ -238,13 +238,13 @@ extractMTBQ <- function(variable) {
 
 # EC
 EC_MTBQ <- extractMTBQ("EC")
-# saveRDS(EC_MTBQ, file=paste0("processed/wisewb_raster/MTBQ/EC_MTBQ.rds"))
+# saveRDS(EC_MTBQ, file=paste0("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/EC_MTBQ.rds"))
 
 # herbicide
 herbicide_MTBQ <- extractMTBQ("herbicide")
 
 
-PO4_MTBQ <- readRDS("processed/wisewb_raster/MTBQ/PO4_MTBQ.rds")
+PO4_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/PO4_MTBQ.rds")
 
 
 
@@ -385,7 +385,7 @@ for (i in 1:length(wb_waterquality_vars)) {
     viridis::scale_colour_viridis() +
     ggtitle(wb_waterquality_vars[i])
   
-  ggsave(filename = paste0("processed/wisewb_trends_maps_by_site_min6years_(ggmap_version)/", wb_waterquality_vars[i], "_Trends_bw.png"), 
+  ggsave(filename = paste0("processed/wisewb/excluded_winter_months/wisewb_trends_maps_by_site_min6years_(ggmap_version)/", wb_waterquality_vars[i], "_Trends_bw.png"), 
          trendsMap2)
   
   # rm(latMax, latMin, lonMax, lonMin, trendsMap1, trendsMap2)
@@ -395,7 +395,7 @@ rm(i, trendsMap2)
 
 
 # tmap version
-trends_tmap_directory <- "processed/wisewb_trends_maps_by_site_min6years"
+trends_tmap_directory <- "processed/wisewb/excluded_winter_months/wisewb_trends_maps_by_site_min6years"
 
 tm_shape(germany_shp) +
   tm_polygons(lwd = 0.5) +
@@ -475,7 +475,7 @@ rm(trends_tmap_directory, trendsMap)
 
 
 # =================== mean maps ===================
-means_tmap_directory <- "processed/wisewb_means_maps_by_site_min8years"
+means_tmap_directory <- "processed/wisewb/excluded_winter_months/wisewb_means_maps_by_site_min8years"
 
 # function for calculating means
 wb_calMeans <- function(df, year_number) {

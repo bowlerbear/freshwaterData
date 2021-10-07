@@ -85,7 +85,7 @@ water_quality_icm_DE <- water_quality_icm_DE %>%
 
 
 # =================== site data 1 =================== 
-eda_directory_all <- "processed/wisewb_summary_stats/all_variables"
+eda_directory_all <- "processed/wisewb/excluded_winter_months/wisewb_summary_stats/all_variables"
 
 # check no. of missing coordinates
 WISE6_SpatialObject_DerivedData %>% nrow() # 2074
@@ -276,7 +276,7 @@ rm(wb_var_selected)
 
 
 # =================== site data 2 =================== 
-eda_directory <- "processed/wisewb_summary_stats"
+eda_directory <- "processed/wisewb/excluded_winter_months/wisewb_summary_stats"
 
 # merge water_quality_icm_DE and WISE6_SpatialObject_DerivedData
 water_quality_icm_DE_wSites <- water_quality_icm_DE %>% left_join((WISE6_SpatialObject_DerivedData %>% 
