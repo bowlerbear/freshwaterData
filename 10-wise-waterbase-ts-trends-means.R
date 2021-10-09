@@ -539,16 +539,29 @@ extractMTBQ <- function(variable) {
 }
 
 
-# EC
+# to be processed on HPC cluster
+diss.O2_MTBQ <- extractMTBQ("diss.O2")
 EC_MTBQ <- extractMTBQ("EC")
-# saveRDS(EC_MTBQ, file=paste0("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/EC_MTBQ.rds"))
-
-# herbicide
+fungicide_MTBQ <- extractMTBQ("fungicide")
+H2O.temp_MTBQ <- extractMTBQ("H2O.temp")
 herbicide_MTBQ <- extractMTBQ("herbicide")
+insecticide_MTBQ <- extractMTBQ("insecticide")
+NH4_MTBQ <- extractMTBQ("NH4")
+NO2_MTBQ <- extractMTBQ("NO2")
+NO3_MTBQ <- extractMTBQ("NO3")
+pesticide.general_MTBQ <- extractMTBQ("pesticide.general")
+pH_MTBQ <- extractMTBQ("pH")
+PO4_MTBQ <- extractMTBQ("PO4")
 
 
+# processed successfully on HPC cluster
+EC_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/EC_MTBQ.rds")
+fungicide_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/fungicide_MTBQ.rds")
+H2O.temp_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/H2O.temp_MTBQ.rds")
+insecticide_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/insecticide_MTBQ.rds")
+pesticide.general_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/pesticide.general_MTBQ.rds")
+pH_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/pH_MTBQ.rds")
 PO4_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/PO4_MTBQ.rds")
-
 
 
 # function from "sMon/sMon-Analyses/Odonata_Git/sMon-insects/R/sparta_wrapper_functions.R"
@@ -567,32 +580,72 @@ mtbqsDF %>% tibble()
 mtbqsDF$MTB_CoarseNatur <- gsub("NaturrÃ¤ume Deutschland/","",mtbqsDF$MTB_CoarseNatur)
 
 
-
-
-
+# plot without any ecoregion
 PO4_MTBQ %>% 
   group_by(Year) %>% 
   summarise(meanVal = mean(meanVal, na.rm = T)) %>% 
   ggplot() +
   geom_line(aes(x=Year, y=meanVal))
 
-
-#add ecoregions
+# add ecoregions
 PO4_MTBQ <- PO4_MTBQ %>% addMTBQ()
 PO4_MTBQ$Natur <- mtbqsDF$MTB_CoarseNatur[match(PO4_MTBQ$MTB_Q,mtbqsDF$MTB_Q)]
 
-#remove any without
+# remove any without
 PO4_MTBQ <- subset(PO4_MTBQ, !is.na(Natur))
 
 PO4_MTBQ_summary <- PO4_MTBQ %>%
   group_by(Natur,Year) %>%
-  summarise(meanValue = mean(meanVal,na.rm=T))
+  summarise(meanValue = mean(meanVal,na.rm=T)) %>% 
+  mutate(Year = as.integer(Year))
 
 ggplot(PO4_MTBQ_summary) +
   geom_line(aes(x=Year,y=meanValue,colour=Natur),size=1.5)+
   theme_bw()+
+  scale_x_continuous(breaks=seq(min(PO4_MTBQ_summary$Year), max(PO4_MTBQ_summary$Year), 1)) +
   ggtitle("PO4_MTBQ")+
   theme(legend.position = "top")
 
 
+# plot all processed variables
+MTBQ_variables <- ls(.GlobalEnv, pattern = "_MTBQ")
+df_list <- mget(MTBQ_variables, envir = .GlobalEnv)
 
+
+# add names
+for (i in 1:length(df_list)) {
+  names(df_list[i]) <- MTBQ_variables[i]
+}
+
+
+for (i in 1:length(df_list)) {
+  print(paste0("Plotting ", names(df_list[i])))
+  
+  #add ecoregions
+  variable_tmp <- df_list[[i]] %>% addMTBQ()
+  variable_tmp$Natur <- mtbqsDF$MTB_CoarseNatur[match(variable_tmp$MTB_Q,mtbqsDF$MTB_Q)]
+  
+  #remove any without
+  variable_tmp <- subset(variable_tmp, !is.na(Natur))
+  
+  #mean value (e.g. temp, prep) per year and Natur
+  variable_tmp_summary <- variable_tmp %>%
+    group_by(Natur,Year) %>%
+    summarise(meanValue = mean(meanVal,na.rm=T)) %>% 
+    mutate(Year = as.integer(Year))
+  
+  #plotting
+  variable_tmp_map <- ggplot(variable_tmp_summary) +
+    geom_line(aes(x=Year,y=meanValue,colour=Natur),size=1.5)+
+    theme_bw()+
+    scale_x_continuous(breaks=seq(min(variable_tmp_summary$Year), max(variable_tmp_summary$Year), 1)) +
+    ggtitle(gsub("_MTBQ", "", paste0(names(df_list[i]))))+
+    theme(legend.position = "top")
+  
+  # save ggplot
+  ggsave(filename = paste0("processed/wisewb/excluded_winter_months/wisewb_time_series_MTBQ/", gsub("_MTBQ", "", paste0(names(df_list[i]))), "_ts.png"), 
+         variable_tmp_map)
+  
+  rm(variable_tmp, variable_tmp_summary, variable_tmp_map)
+}
+rm(df_list, i)
