@@ -555,10 +555,15 @@ PO4_MTBQ <- extractMTBQ("PO4")
 
 
 # processed successfully on HPC cluster
+diss.O2_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/diss.O2_MTBQ.rds")
 EC_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/EC_MTBQ.rds")
 fungicide_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/fungicide_MTBQ.rds")
 H2O.temp_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/H2O.temp_MTBQ.rds")
+herbicide_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/herbicide_MTBQ.rds")
 insecticide_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/insecticide_MTBQ.rds")
+NH4_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/NH4_MTBQ.rds")
+NO2_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/NO2_MTBQ.rds")
+NO3_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/NO3_MTBQ.rds")
 pesticide.general_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/pesticide.general_MTBQ.rds")
 pH_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/pH_MTBQ.rds")
 PO4_MTBQ <- readRDS("processed/wisewb/excluded_winter_months/wisewb_raster/MTBQ/PO4_MTBQ.rds")
